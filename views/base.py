@@ -24,9 +24,7 @@ class View:
             "Merci de saisir la localisation du tournois : "),
             "date" :  input("merci de saisir une date pour le tournois : "),
             "description" : input(
-            "merci de saisir une description pour le tournois : "),
-            "time" : self.get_tournament_time_management,
-            "rounds" : self.get_number_of_rounds
+            "merci de saisir une description pour le tournois : ")
         }
         return tournament_info
 
@@ -37,7 +35,8 @@ class View:
         if tournament_time == "Bullet" or tournament_time == "Blitz" or tournament_time == "Coup rapide":
             return tournament_time
         print("Choix incorrect.")
-        View.get_tournament_time_management()
+        self.get_tournament_time_management()
+        return tournament_time
 
     # View function regarding model Round
     def get_number_of_rounds(self):
@@ -47,13 +46,12 @@ class View:
         if rounds_choice == "Y" or rounds_choice == "y":
             round_number = input(
                 "Saississez le nombre de tours pour le tournois")
-
         elif rounds_choice == "N" or rounds_choice == "N":
             print("Le tournois se déroulera sur 4 rounds.")
             round_number = 4
         else:
             print("La réponse saisie est incorrecte.")
-            View.get_number_of_rounds()
+            self.get_number_of_rounds()
         return round_number
 
     def get_round_starttime(self):
@@ -77,7 +75,9 @@ class View:
         return end_date
 
     # View function regarding model Match
-    def get_player_result(self, player_name):
+    def get_player_result(self, player):
         """ask for the player's match result"""
-        result = input(f"Merci de saisir le resultat de {player_name} : ")
+        player_name = player.get_player_name()
+        result_string = input(f"Merci de saisir le resultat de {player_name} : ")
+        result = float(result_string)
         return result

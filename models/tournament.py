@@ -1,7 +1,7 @@
 class Tournament:
     """Objet tournois"""
 
-    def __init__(self, name, place, date, players, time_management, description, rounds):
+    def __init__(self, name, place, date, time_management, description, players, rounds):
         self.name = name
         self.place = place
         self.date = date

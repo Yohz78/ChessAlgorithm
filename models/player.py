@@ -1,7 +1,7 @@
 class Player:
     """Player."""
 
-    def __init__(self, surname, name, birthdate, gender, ranking, score=0):
+    def __init__(self, surname, name, birthdate, gender, ranking, score=0.0):
         self.surname = surname
         self.name = name
         self.birthdate = birthdate
@@ -23,4 +23,4 @@ class Player:
 
     def increment_player_score(self, result):
         """add the result of a round to the score total of a player"""
-        self.score += result    
+        self.score += result
