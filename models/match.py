@@ -1,6 +1,4 @@
-
-
-class match:
+class Match:
     """Object Match"""
     def __init__(self, player_1, result_player_1, player_2, result_player_2):
         self.player_1 = player_1

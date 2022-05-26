@@ -1,8 +1,10 @@
+from operator import attrgetter
 
 
-class Round: 
+class Round:
     "Objet round"
-    def __init__(self, matches, round_number,start_time, start_date, end_time, end_date):
+
+    def __init__(self, matches, round_number, start_time, start_date, end_time, end_date):
         self.matches = matches
         self.round_number = round_number
         self.start_time = start_time
@@ -10,4 +12,7 @@ class Round:
         self.end_time = end_time
         self.end_date = end_date
 
+    def get_round_matches(self):
+        """return the list of match tuples"""
+        return self.matches    
 

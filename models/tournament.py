@@ -1,6 +1,7 @@
 
 class Tournament:
     """Objet tournois"""
+
     def __init__(self, name, place, date, players, time_management, description, rounds):
         self.name = name
         self.place = place
@@ -11,4 +12,4 @@ class Tournament:
         self.rounds = rounds
 
     def get_tournament_rounds(self):
-        return self.rounds    
+        return self.rounds
