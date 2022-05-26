@@ -17,27 +17,18 @@ class View:
         return player_info
 
     # View function regarding model Tournament
-    def get_tournament_name(self):
-        """Ask for tournament name"""
-        tournament_name = input("Merci de saisir le nom du tournois : ")
-        return tournament_name
-
-    def get_tournament_place(self):
-        """Ask for the tournament place"""
-        tournament_place = input(
-            "Merci de saisir la localisation du tournois : ")
-        return tournament_place
-
-    def get_tournament_description(self):
-        """Ask for the tournament description"""
-        tournament_description = input(
-            "merci de saisir une description pour le tournois : ")
-        return tournament_description
-
-    def get_tournament_date(self):
-        """Ask for the tournament date"""
-        tournament_date = input("merci de saisir une date pour le tournois : ")
-        return tournament_date
+    def get_tournament(self):
+        tournament_info = {
+            "name" : input("Merci de saisir le nom du tournois : "),
+            "place" : input(
+            "Merci de saisir la localisation du tournois : "),
+            "date" :  input("merci de saisir une date pour le tournois : "),
+            "description" : input(
+            "merci de saisir une description pour le tournois : "),
+            "time" : self.get_tournament_time_management,
+            "rounds" : self.get_number_of_rounds
+        }
+        return tournament_info
 
     def get_tournament_time_management(self):
         """ask for the tournament time management type"""
@@ -63,7 +54,7 @@ class View:
         else:
             print("La réponse saisie est incorrecte.")
             View.get_number_of_rounds()
-        return round_number 
+        return round_number
 
     def get_round_starttime(self):
         """ask for the tournament start time"""

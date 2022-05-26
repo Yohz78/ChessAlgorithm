@@ -1,4 +1,3 @@
-
 class Tournament:
     """Objet tournois"""
 

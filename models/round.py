@@ -1,6 +1,3 @@
-from operator import attrgetter
-
-
 class Round:
     "Objet round"
 
@@ -14,5 +11,21 @@ class Round:
 
     def get_round_matches(self):
         """return the list of match tuples"""
-        return self.matches    
+        return self.matches
 
+    def get_pair(self, match):
+        """Return a pair of player with list type without their score"""
+        (player_1_list, player_2_list) = match
+        player_1 = player_1_list[0]
+        player_2 = player_2_list[0]
+        pair = [player_1, player_2]
+        return pair
+
+    def get_pairs(self):
+        """Return a list of matches pairs in list type, not tuple"""
+        matches = self.matches
+        pairs = []
+        for match in matches:
+            pair = self.get_pair(match)
+            pairs.append(pair)
+        return pairs

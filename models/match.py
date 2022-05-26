@@ -10,4 +10,4 @@ class Match:
         player1_list = [self.player_1, self.result_player_1]
         player2_list = [self.player_2, self.result_player_2]
         match_results = (player1_list, player2_list)
-        return match_results
+        return match_results 
