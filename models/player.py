@@ -9,6 +9,9 @@ class Player:
         self.ranking = ranking
         self.score = score
 
+    def __str__(self):
+        return self.name   
+
     def get_player_name(self):
         """return the player's name"""
         return self.name

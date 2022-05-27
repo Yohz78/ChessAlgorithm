@@ -1,6 +1,4 @@
 """Base view."""
-
-
 class View:
     """Chess tournament view"""
 
@@ -54,30 +52,3 @@ class View:
             self.get_number_of_rounds()
         return round_number
 
-    def get_round_starttime(self):
-        """ask for the tournament start time"""
-        start_time = input("Saisissez l'heure de démarrage du round : ")
-        return start_time
-
-    def get_round_startdate(self):
-        """ask for the tournament start date"""
-        start_date = input("Saisissez la date de démarrage du round : ")
-        return start_date
-
-    def get_round_endtime(self):
-        """ask for the tournament end time"""
-        end_time = input("Saisissez l'heure de fin du round : ")
-        return end_time
-
-    def get_round_enddate(self):
-        """ask for the tournament start date"""
-        end_date = input("Saisissez la date de fin du round : ")
-        return end_date
-
-    # View function regarding model Match
-    def get_player_result(self, player):
-        """ask for the player's match result"""
-        player_name = player.get_player_name()
-        result_string = input(f"Merci de saisir le resultat de {player_name} : ")
-        result = float(result_string)
-        return result
