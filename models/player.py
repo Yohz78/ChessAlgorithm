@@ -12,17 +12,25 @@ class Player:
     def __str__(self):
         return self.name   
 
-    def get_player_name(self):
+    def get_name(self):
         """return the player's name"""
         return self.name
 
-    def get_player_ranking(self):
+    def get_surname(self):
+        """return the player's surname"""
+        return self.surname
+
+    def get_ranking(self):
         """return the player's ranking"""
         return self.ranking
 
     def get_player_score(self):
-        """return theplayer's score"""
+        """return the player's score"""
         return self.score
+
+    def set_ranking(self, ranking):
+        """set the player's rank"""
+        self.ranking = ranking    
 
     def increment_player_score(self, result):
         """add the result of a round to the score total of a player"""

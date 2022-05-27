@@ -14,101 +14,111 @@ class Controller:
         """Has a list of players, a list of rounds and the tournament info."""
         # Models
         self.players: List[Player] = []
-        self.rounds: List[Round] = []
+        self.tournaments: List[Tournament] = []
 
         # Views
         self.view = view
 
-# Player's related controller's methods
-    def get_players(self):
+    def save_players(self):
         """get the tournament players"""
+        player_number = int(
+            input("combien de joueur souhaitez vous ajouter ?"))
         players = []
-        while len(players) < 4:
+        while len(players) < player_number:
             player_info = self.view.get_player()
             player = Player(player_info["surname"], player_info["name"],
                             player_info["birthdate"], player_info["gender"], player_info['ranking'])
+            self.players.append(player)
             players.append(player)
-        return players
 
-# Pair creation related controller's methods
-    def save_pairs(self, pairs, saved_pairs):
-        """Save a list of names pair for the players in the input list of players
-        in the list saved_pairs given in input"""
-        for pair in pairs:
-            player_1 = pair[0]
-            player_2 = pair[1]
-            player_1_name = player_1.get_player_name()
-            player_2_name = player_2.get_player_name()
-            pair_names = [player_1_name, player_2_name]
-            saved_pairs.append(pair_names) 
-        return saved_pairs   
+    def get_players_ranking(self):
+        "print the players sorted by rank"
+        print("Voici le classement des joueurs")
+        self.players.sort(key=attrgetter("ranking"))
+        count = 1
+        for player in self.players:
+            player_name = player.get_name()
+            player_surname = player.get_surname()
+            player_ranking = player.get_ranking()
+            print(f"{count} -- Rank {player_ranking} : {player_name} {player_surname}") 
+            count += 1 
 
-# Match related controller's methods
-    def save_match_results(self, pair):
-        """ Return an object match after asking for a pair of player results from the user.
-         Increment player score."""
-        player_1 = pair[0]
-        player_2 = pair[1]
-        player_1_result = self.view.get_player_result(player_1)
-        player_2_result = self.view.get_player_result(player_2)
-        player_1.increment_player_score(player_1_result)
-        player_2.increment_player_score(player_2_result)
-        match = Match(player_1, player_1_result, player_2, player_2_result)
-        match_results = match.get_match_tuple()
-        return match_results
+    def get_players(self):
+        "print the players in ascending order based on surname"
+        print("Vous avez choisi d'afficher la liste des joueurs")
+        self.players.sort(key=attrgetter("surname"))
+        for player in self.players:
+            player_name = player.get_name()
+            player_surname = player.get_surname()
+            print(f"{player_name} {player_surname}") 
 
-# Round related controller's methods
-    def create_a_round(self, round_number):
-        """Return an object round"""
-        now = datetime.now()
-        start_time = now.strftime("%d/%m/%Y %H:%M:%S")        
-        round = Round(round_number, start_time)
-        # self.rounds.append(round)
-        return round
+    def get_tournaments(self):
+        "print the tournaments in self.tournaments"
+        print("Voici la liste des tournois en mémoire.")
+        count = 1
+        for tournament in self.tournaments:
+            tournament_name = tournament.get_name()
+            print(f"Tournois {count} : {tournament_name}")
+            count += 1        
 
-    def get_end_time(self):        
-        now = datetime.now()
-        end_time= now.strftime("%d/%m/%Y %H:%M:%S")
-        return end_time
-
-# Tournament related controller's methods
     def create_tournament(self):
         """Return an object tournament"""
         tournament_info = self.view.get_tournament()
         tournament_info['time'] = self.view.get_tournament_time_management()
-        tournament_info['rounds'] = self.view.get_number_of_rounds()        
+        tournament_info['rounds'] = self.view.get_number_of_rounds()
         tournament = Tournament(
-            tournament_info["name"], tournament_info["place"], tournament_info['date'], 
+            tournament_info["name"], tournament_info["place"], tournament_info['date'],
             tournament_info["time"], tournament_info["description"], self.players, tournament_info['rounds'])
         return tournament
 
     def run(self):
         """Run the application"""
-        tournament = self.create_tournament() 
-        players_list = self.get_players()
-        tournament.set_players(players_list)
-        total_rounds = tournament.get_round_number()
-        current_round = 0
-        saved_pairs = []
-        while current_round != total_rounds: 
-            new_round = self.create_a_round(current_round+1)      
-            if current_round == 0:
-                pairs = new_round.create_pairs(players_list)
-                print("First pairs")
-                print(pairs)
-                saved_pairs = self.save_pairs(pairs, saved_pairs)
+        while(True):
+            self.view.display_menu()
+            option = int(input("Entrez votre choix: "))
+            if option == 1:
+                print("Vous avez choisi d'ajouter des joueurs.")
+                players_list = self.save_players()
+            elif option == 2:
+                print("Vous avez choisi de créer un tournois")
+                if len(self.players) < 8:
+                    print("Pas assez de joueur pour créer un tournois. Retour au menu")
+                else:
+                    tournament = self.create_tournament()
+                    self.tournaments.append(tournament)
+                    print("Tournois créé. Retour au menu principal.")
+            elif option == 3:
+                print("Vous avez choisis de lancer un tournois.")
+                count = 1
+                players_list = self.players
+                print("Liste des tournois:")
+                for tournament in self.tournaments:
+                    tournament_name = tournament.get_name()
+                    print(f"Tournois {count} : {tournament_name}")
+                choice = int(input("Merci de saisir le numéro du tournois à lancer."))
+                launched_tournament = self.tournaments[choice-1]
+                launched_tournament.choose_players(players_list)
+                launched_tournament.run_tournament
+            elif option == 4:
+                self.get_players_ranking()
+            elif option == 5:
+                self.get_players()
+            elif option == 6:
+                self.get_tournaments() 
+            elif option == 7:
+                print("Vous avez choisi de modifier le classement d'un joueur.")
+                self.get_players_ranking()
+                players = self.players
+                choice = int(input("Choississez un joueur à modifier en tapant son numéro:"))
+                player = players[choice-1]
+                ranking = input("Indiquer le rang du joueur: ")
+                player.set_ranking(ranking)
+            elif option == 8:
+                print("Vous avez choisi de quitter l'application. Bye bye !")
+                quit()
             else:
-                pairs = new_round.create_new_pairs(players_list, saved_pairs)
-                print("new pairs")
-                print(pairs)
-                saved_pairs = self.save_pairs(pairs, saved_pairs)
-                print(f"saved pairs {saved_pairs}")
-            new_round.save_matches(pairs)
-            print(new_round.__str__())    
-            tournament.add_round(new_round)
-            current_round += 1
-        rounds = tournament.get_rounds()
-        for round in rounds:
-            matches = round.get_round_matches()
-            print(matches)
+                print("Choix invalide. Merci de saisir un nombre entre 1 et 8.")
+
+
+
 

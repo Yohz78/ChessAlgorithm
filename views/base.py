@@ -52,3 +52,19 @@ class View:
             self.get_number_of_rounds()
         return round_number
 
+    def display_menu(self):
+        menu = {
+            1: "Ajouter des joueurs à la base de données",
+            2: "Creer un tournois",
+            3: "Lancer un tournois",
+            4: "Afficher le classement des joueurs",
+            5: "Afficher la liste des joueurs",
+            6: "Afficher la liste des tournois",
+            7: "Modifier le classement d'un joueur",
+            8: "Quitter l'application"
+        }
+        for key in menu.keys():
+            print(key, "--", menu[key])
+
+
+
