@@ -58,7 +58,7 @@ class View:
         for tournament in tournaments:
             tournament_name = tournament.get_name()
             print(f"Tournois {count} : {tournament_name}")
-        choice = int(input("Merci de saisir le numéro du tournois à lancer."))
+        choice = int(input("Merci de saisir le numéro du tournois choisi."))
         tournament = tournaments[choice-1]
         return tournament
 

@@ -1,6 +1,5 @@
 """Entry point."""
 
-from turtle import ycor
 from controllers.base import Controller
 from views.base import View
 

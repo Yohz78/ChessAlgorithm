@@ -24,7 +24,6 @@ class Controller:
         """save the players in the database"""
         self.players.sort(key=attrgetter("surname"))
         serialized_players = [player.serialized() for player in self.players]
-        print(serialized_players)
         players_table = self.db.table("players")
         players_table.truncate()
         players_table.insert_multiple(serialized_players)
@@ -42,8 +41,7 @@ class Controller:
     def save_tournaments(self):
         self.tournaments.sort(key=attrgetter("name"))
         serialized_tournaments = [tournament.serialized()
-                                  for tournament in self.tournaments]
-        print(serialized_tournaments)                          
+                                  for tournament in self.tournaments]                      
         tournaments_table = self.db.table("tournaments")
         tournaments_table.truncate()
         tournaments_table.insert_multiple(serialized_tournaments)
@@ -59,7 +57,7 @@ class Controller:
 
     def recover_rounds(self, rounds):
         """Return the list of rounds objects based on the list of rounds dictionaries"""
-        rounds = []
+        rounds_list = []
         for round in rounds:
             matches = []
             serialized_matches = round["matches"]
@@ -74,8 +72,8 @@ class Controller:
                 matches.append(new_match)               
             new_round = Round(
                 round["round_number"], round["start_time"], round["end_time"], matches)
-            rounds.append(new_round)
-        return rounds
+            rounds_list.append(new_round)
+        return rounds_list
 
     def load_tournaments(self):
         tournaments_table = self.db.table("tournaments")
@@ -86,7 +84,7 @@ class Controller:
             new_tournament = Tournament(tournament["name"], tournament["place"], tournament["date"], tournament["time_management"],
                                         tournament["description"], tournament["round_number"])
             new_tournament.set_players(tournament_players)       
-            new_tournament.set_rounds(tournament_rounds)                     
+            new_tournament.set_rounds(tournament_rounds)
             self.tournaments.append(new_tournament)
 
     def add_players(self):
@@ -202,11 +200,15 @@ class Controller:
                 tournament.get_playersrank()
             elif option == 14:
                 print("vous avez choisi d'afficher les tours d'un tournois")
-                
+                tournament = self.view.choose_tournament(self.tournaments)
+                rounds = tournament.get_rounds_list()
+                print(rounds)
             elif option == 15:
                 print("vous avez choisi d'afficher les matchs d'un tournois")
+                tournament = self.view.choose_tournament(self.tournaments)
+                tournament.print_matches()
             elif option == 16:
                 print("Vous avez choisi de quitter l'application. Bye bye !")
                 quit()        
             else:
-                print("Choix invalide. Merci de saisir un nombre entre 1 et 8.")
+                print("Choix invalide. Merci de saisir un nombre entre 1 et 16.")

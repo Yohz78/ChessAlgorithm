@@ -21,7 +21,7 @@ class Tournament:
     def serialized(self):
         """ Return a dictionary of the tournament attributes"""
         players = self.get_players()
-        round_list = self.get_round_list()
+        round_list = self.get_rounds_list()
         serialized_tournament = {
             "name": self.name,
             "place": self.place,
@@ -34,44 +34,19 @@ class Tournament:
         }
         return serialized_tournament
 
-    def get_round_list(self):
+    def get_rounds_list(self):
         """Return the list of serialized rounds of the tournament"""
         serialized_rounds = [round.serialized() for round in self.rounds_list]
         return serialized_rounds
+
+    def get_rounds_objects(self):
+        """return the list of rounds in object type"""    
+        return self.rounds_list
 
     def get_players(self):
         """Return the list of serialized players of the tournament"""
         serialized_players = [player.serialized() for player in self.players]
         return serialized_players
-
-    def recover_players(self, players):
-        "recreate the player list based on players dictionary list"
-        player_list = []
-        for player in players:
-            player = Player(player["surname"], player["name"],
-                            player["birthdate"], player["gender"], player["ranking"])
-            player_list.append(player)
-        return player_list
-
-    def recover_rounds(self, rounds):
-        """Return the list of rounds objects based on the list of rounds dictionaries"""
-        rounds = []
-        for round in rounds:
-            matches = []
-            serialized_matches = round["matches"]
-            for match in serialized_matches:
-                player_1_serialized = match["player_1"]
-                player_1 = Player(player_1_serialized["surname"], player_1_serialized["name"],
-                                  player_1_serialized["birthdate"], player_1_serialized["gender"], player_1_serialized["ranking"])
-                player_2_serialized = match["player_2"]
-                player_2 = Player(player_2_serialized["surname"], player_2_serialized["name"],
-                                  player_2_serialized["birthdate"], player_2_serialized["gender"], player_2_serialized["ranking"])
-                new_match = ([player_1, match["result_player_1"]], [player_2, match["result_player_2"]])          
-                matches.append(new_match)               
-            new_round = Round(
-                round["round_number"], round["start_time"], round["end_time"], matches)
-            rounds.append(new_round)
-        return rounds
 
     def get_round_number(self):
         """return the number of round expected for the tournament"""
@@ -84,6 +59,20 @@ class Tournament:
     def get_rounds(self):
         """return the number of round expected for the tournament"""
         return self.rounds_list
+
+    def print_matches(self):
+        rounds = self.get_rounds_objects()
+        all_matches = []
+        all_matches = [round.get_round_matches() for round in rounds]
+        for matches in all_matches:
+            for match in matches:
+                player_1_list = match[0]
+                player_2_list = match[1]
+                player_1_name = player_1_list[0]
+                player_1_result = player_1_list[1]
+                player_2_name = player_2_list[0]
+                player_2_result = player_2_list[1]
+                print(f"{player_1_name} contre {player_2_name} : {player_1_result} pour {player_1_name} et {player_2_result} pour {player_2_name}")    
 
     def get_playersrank(self):
         """return the player list of the tournament ordered by rank"""    
