@@ -35,3 +35,19 @@ class Player:
     def increment_player_score(self, result):
         """add the result of a round to the score total of a player"""
         self.score += result
+
+    def reset_score(self):
+        """Reset the score of a player for a new tournament"""    
+        self.score = 0
+
+    def serialized(self):
+        "Return a dictionary of the players attributes"
+        serialized_player = {
+            'surname' : self.surname,
+            'name' : self.name,
+            'birthdate' : self.birthdate,
+            'ranking' : self.ranking,
+            'gender' : self.gender
+        }
+        return serialized_player    
+

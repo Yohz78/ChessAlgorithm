@@ -46,11 +46,23 @@ class View:
                 "Saississez le nombre de tours pour le tournois")
         elif rounds_choice == "N" or rounds_choice == "N":
             print("Le tournois se déroulera sur 4 rounds.")
-            round_number = 4
+            round_number = 1
         else:
             print("La réponse saisie est incorrecte.")
             self.get_number_of_rounds()
         return round_number
+
+    def choose_tournament(self, tournaments):
+        count = 1
+        print("Liste des tournois:")
+        for tournament in tournaments:
+            tournament_name = tournament.get_name()
+            print(f"Tournois {count} : {tournament_name}")
+        choice = int(input("Merci de saisir le numéro du tournois à lancer."))
+        tournament = tournaments[choice-1]
+        return tournament
+
+        
 
     def display_menu(self):
         menu = {
@@ -61,7 +73,15 @@ class View:
             5: "Afficher la liste des joueurs",
             6: "Afficher la liste des tournois",
             7: "Modifier le classement d'un joueur",
-            8: "Quitter l'application"
+            8: "Sauvegarder les joueurs dans la database",
+            9: "Charger les joueurs enregistrés dans la database",
+            10: "Sauvegarder les tournois dans la database",
+            11: "Charger les tournois de la database",
+            12: "Afficher la liste des joueurs d'un tournois",
+            13: "Afficher le classement des joueurs d'un tournois",
+            14: "Afficher les tours d'un tournois",
+            15: "Afficher tous les matchs d'un tournois",
+            16: "Quitter l'application" 
         }
         for key in menu.keys():
             print(key, "--", menu[key])
