@@ -10,7 +10,7 @@ class Player:
         self.score = score
 
     def __str__(self):
-        return self.name   
+        return self.name
 
     def get_name(self):
         """return the player's name"""
@@ -30,24 +30,23 @@ class Player:
 
     def set_ranking(self, ranking):
         """set the player's rank"""
-        self.ranking = ranking    
+        self.ranking = ranking
 
     def increment_player_score(self, result):
         """add the result of a round to the score total of a player"""
         self.score += result
 
     def reset_score(self):
-        """Reset the score of a player for a new tournament"""    
+        """Reset the score of a player for a new tournament"""
         self.score = 0
 
     def serialized(self):
-        "Return a dictionary of the players attributes"
+        "Return a dictionary of the players attributes in order to save it in the DB"
         serialized_player = {
-            'surname' : self.surname,
-            'name' : self.name,
-            'birthdate' : self.birthdate,
-            'ranking' : self.ranking,
-            'gender' : self.gender
+            'surname': self.surname,
+            'name': self.name,
+            'birthdate': self.birthdate,
+            'ranking': self.ranking,
+            'gender': self.gender
         }
-        return serialized_player    
-
+        return serialized_player

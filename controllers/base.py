@@ -21,7 +21,7 @@ class Controller:
         self.db = TinyDB('db.json')
 
     def save_players(self):
-        """save the players in the database"""
+        """save the players in a 'player' table of the database"""
         self.players.sort(key=attrgetter("surname"))
         serialized_players = [player.serialized() for player in self.players]
         players_table = self.db.table("players")
@@ -29,7 +29,7 @@ class Controller:
         players_table.insert_multiple(serialized_players)
 
     def load_players(self):
-        """Load the players from the database"""
+        """Load the players from the 'player' table of the database"""
         players_table = self.db.table("players")
         players = players_table.all()
         for player in players:
@@ -39,9 +39,10 @@ class Controller:
         self.players.sort(key=attrgetter("surname"))
 
     def save_tournaments(self):
+        """Save the tournament in the 'tournaments' table of the the database"""
         self.tournaments.sort(key=attrgetter("name"))
         serialized_tournaments = [tournament.serialized()
-                                  for tournament in self.tournaments]                      
+                                  for tournament in self.tournaments]
         tournaments_table = self.db.table("tournaments")
         tournaments_table.truncate()
         tournaments_table.insert_multiple(serialized_tournaments)
@@ -68,14 +69,17 @@ class Controller:
                 player_2_serialized = match["player_2"]
                 player_2 = Player(player_2_serialized["surname"], player_2_serialized["name"],
                                   player_2_serialized["birthdate"], player_2_serialized["gender"], player_2_serialized["ranking"])
-                new_match = ([player_1, match["result_player_1"]], [player_2, match["result_player_2"]])          
-                matches.append(new_match)               
+                new_match = ([player_1, match["result_player_1"]], [
+                             player_2, match["result_player_2"]])
+                matches.append(new_match)
             new_round = Round(
                 round["round_number"], round["start_time"], round["end_time"], matches)
             rounds_list.append(new_round)
         return rounds_list
 
     def load_tournaments(self):
+        """Load a tournament from the database. Recreate its players and rounds.
+        Then, append the tournament to the global list of tournaments."""
         tournaments_table = self.db.table("tournaments")
         tournaments = tournaments_table.all()
         for tournament in tournaments:
@@ -83,14 +87,13 @@ class Controller:
             tournament_rounds = self.recover_rounds(tournament["round_list"])
             new_tournament = Tournament(tournament["name"], tournament["place"], tournament["date"], tournament["time_management"],
                                         tournament["description"], tournament["round_number"])
-            new_tournament.set_players(tournament_players)       
+            new_tournament.set_players(tournament_players)
             new_tournament.set_rounds(tournament_rounds)
             self.tournaments.append(new_tournament)
 
     def add_players(self):
-        """Add players to the application"""
-        player_number = int(
-            input("combien de joueur souhaitez vous ajouter ?"))
+        """Ask user to add players to the application"""
+        player_number = self.view.ask_player_number()
         players = []
         while len(players) < player_number:
             player_info = self.view.get_player()
@@ -131,7 +134,7 @@ class Controller:
             count += 1
 
     def create_tournament(self):
-        """Return an object tournament"""
+        """Ask user the info required then create and return an object tournament"""
         tournament_info = self.view.get_tournament()
         tournament_info['time'] = self.view.get_tournament_time_management()
         tournament_info['rounds'] = self.view.get_number_of_rounds()
@@ -144,7 +147,7 @@ class Controller:
         """Run the application"""
         while(True):
             self.view.display_menu()
-            option = int(input("Entrez votre choix: "))
+            option = self.view.choose_option()
             if option == 1:
                 print("Vous avez choisi d'ajouter des joueurs.")
                 players_list = self.add_players()
@@ -159,24 +162,25 @@ class Controller:
             elif option == 3:
                 print("Vous avez choisis de lancer un tournois.")
                 players_list = self.players
-                launched_tournament = self.view.choose_tournaments(self.tournaments)
-                launched_tournament.choose_players(players_list)
+                launched_tournament = self.view.choose_tournament(
+                    self.tournaments)
+                player_list = launched_tournament.choose_players(players_list)
                 launched_tournament.run_tournament()
+                launched_tournament.close_tournament()
+                self.view.post_tournament_ranking(player_list)
             elif option == 4:
+                print("Vous avez choisi d'afficher le classement des joueurs")
                 self.get_players_ranking()
             elif option == 5:
+                print("Vous avez choisi d'afficher la list des joueurs par ordre alphabétique.")
                 self.get_players()
             elif option == 6:
+                print("vous avez choisi d'afficher la liste des tournois.")
                 self.get_tournaments()
             elif option == 7:
                 print("Vous avez choisi de modifier le classement d'un joueur.")
                 self.get_players_ranking()
-                players = self.players
-                choice = int(
-                    input("Choississez un joueur à modifier en tapant son numéro:"))
-                player = players[choice-1]
-                ranking = int(input("Indiquer le rang du joueur: "))
-                player.set_ranking(ranking)
+                self.view.set_player_ranking(self.players)
             elif option == 8:
                 print("vous avez choisi de sauvegarder les joueurs dans la database")
                 self.save_players()
@@ -186,16 +190,17 @@ class Controller:
                 self.load_players()
             elif option == 10:
                 print("Vous avez choisi de sauvegarder les tournois")
-                self.save_tournaments()    
+                self.save_tournaments()
             elif option == 11:
                 print("Vous avez choisi de charger les tournois")
-                self.load_tournaments()    
+                self.load_tournaments()
             elif option == 12:
                 print("Vous avez choisi d'afficher la liste des joueurs d'un tournois'")
                 tournament = self.view.choose_tournament(self.tournaments)
                 tournament.get_player_list()
             elif option == 13:
-                print("Vous avez choisi d'afficher le classement des joueurs d'un tournois")
+                print(
+                    "Vous avez choisi d'afficher le classement des joueurs d'un tournois")
                 tournament = self.view.choose_tournament(self.tournaments)
                 tournament.get_playersrank()
             elif option == 14:
@@ -209,6 +214,6 @@ class Controller:
                 tournament.print_matches()
             elif option == 16:
                 print("Vous avez choisi de quitter l'application. Bye bye !")
-                quit()        
+                quit()
             else:
                 print("Choix invalide. Merci de saisir un nombre entre 1 et 16.")
