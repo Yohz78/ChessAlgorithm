@@ -41,12 +41,13 @@ class Player:
         self.score = 0
 
     def serialized(self):
-        "Return a dictionary of the players attributes in order to save it in the DB"
+        """Return a dictionary of the players
+        attributes in order to save it in the DB"""
         serialized_player = {
-            'surname': self.surname,
-            'name': self.name,
-            'birthdate': self.birthdate,
-            'ranking': self.ranking,
-            'gender': self.gender
+            "surname": self.surname,
+            "name": self.name,
+            "birthdate": self.birthdate,
+            "ranking": self.ranking,
+            "gender": self.gender,
         }
         return serialized_player

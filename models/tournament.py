@@ -19,7 +19,8 @@ class Tournament:
         self.rounds_list: List[Round] = []
 
     def serialized(self):
-        """ Return a dictionary of the tournament attributes in order to save it the DB."""
+        """Return a dictionary of the tournament
+        attributes in order to save it the DB."""
         players = self.get_players()
         round_list = self.get_rounds_list()
         serialized_tournament = {
@@ -30,7 +31,7 @@ class Tournament:
             "time_management": self.time_management,
             "description": self.description,
             "round_number": self.rounds,
-            "round_list": round_list
+            "round_list": round_list,
         }
         return serialized_tournament
 
@@ -43,11 +44,6 @@ class Tournament:
         """Return the list of serialized players of the tournament"""
         serialized_players = [player.serialized() for player in self.players]
         return serialized_players
-
-    def get_player_list(self):
-        """return self.players for the tournament""" 
-        print(self.players)
-        return self.players   
 
     def get_round_number(self):
         """return the number of round expected for the tournament"""
@@ -62,7 +58,8 @@ class Tournament:
         return self.rounds_list
 
     def print_matches(self):
-        """Print all the matches having already taken place for the tournament."""
+        """Print all the matches
+        having already taken place for the tournament."""
         rounds = self.get_rounds()
         all_matches = []
         all_matches = [round.get_round_matches() for round in rounds]
@@ -75,7 +72,10 @@ class Tournament:
                 player_2_name = player_2_list[0]
                 player_2_result = player_2_list[1]
                 print(
-                    f"{player_1_name} contre {player_2_name} : {player_1_result} pour {player_1_name} et {player_2_result} pour {player_2_name}")
+                    f"{player_1_name} contre {player_2_name} :"
+                    f" {player_1_result} pour {player_1_name} "
+                    f"et {player_2_result} pour {player_2_name}"
+                )
 
     def get_playersscore(self):
         """print the list of players of the tournament ordered by score"""
@@ -86,7 +86,8 @@ class Tournament:
             player_surname = player.get_surname()
             player_score = player.get_player_score()
             print(
-                f"{count} -- Rank {player_score} : {player_name} {player_surname}")
+                f"{count} -- Rank {player_score} {player_name} {player_surname}"
+            )
             count += 1
 
     def get_playersrank(self):
@@ -98,18 +99,19 @@ class Tournament:
             player_surname = player.get_surname()
             player_ranking = player.get_ranking()
             print(
-                f"{count} -- Rank {player_ranking} : {player_name} {player_surname}")
-            count += 1        
+                f"{count} -- Rank {player_ranking} :" f" {player_name} {player_surname}"
+            )
+            count += 1
 
     def get_player_list(self):
-        """print the player list of the tournament in growing order based on surname"""
+        """print the player list of the tournament in growing order
+        based on surname"""
         self.players.sort(key=attrgetter("surname"))
         count = 1
         for player in self.players:
             player_name = player.get_name()
             player_surname = player.get_surname()
-            print(
-                f"{count} --  {player_name} {player_surname}")
+            print(f"{count} --  {player_name} {player_surname}")
             count += 1
 
     def add_round(self, round):
@@ -144,7 +146,10 @@ class Tournament:
         return saved_pairs
 
     def choose_players(self, players):
-        """Ask the user of choose the tournament's players based on players in the input list. Reset the players score for the tournament. Return the list of choosen players"""
+        """Ask the user of choose the tournament's players based on players
+        in the input list. Reset the players score for the tournament.
+        Return the list of choosen players
+        """
         print("Choisissez 8 joueurs dans la liste ci dessous:")
         count = 1
         for player in players:
@@ -156,12 +161,13 @@ class Tournament:
         player_list = []
         while choice < 8:
             player_number = int(
-                input("Merci de choisir un joueur à partir de son numéro:"))
-            player_index = player_number-1
+                input("Merci de choisir un joueur à partir de son numéro:")
+            )
+            player_index = player_number - 1
             player = players[player_index]
             player.reset_score()
             player_list.append(player)
-            choice += 1    
+            choice += 1
         self.set_players(player_list)
         return player_list
 
@@ -171,7 +177,7 @@ class Tournament:
         current_round = 0
         saved_pairs = []
         while current_round != total_rounds:
-            new_round = self.create_a_round(current_round+1)
+            new_round = self.create_a_round(current_round + 1)
             if current_round == 0:
                 pairs = new_round.create_pairs(self.players)
                 saved_pairs = self.save_pairs(pairs, saved_pairs)
@@ -183,12 +189,9 @@ class Tournament:
             current_round += 1
 
     def close_tournament(self):
-        """Close a tournament. Print the previous player ranking then the tournament's players ordered by score."""
+        """Close a tournament. Print the previous player ranking
+        then the tournament's players ordered by score."""
         print("Voici le classement des joueurs avant le tournois")
         self.get_playersrank()
         print("Voici les scores des joueurs du tournois")
         self.get_playersscore()
-
-
-
-

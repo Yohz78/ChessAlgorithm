@@ -34,12 +34,13 @@ class Controller:
         players = players_table.all()
         for player in players:
             new_player = Player(player["surname"], player["name"],
-                                player["birthdate"], player["gender"], player["ranking"])
+                                player["birthdate"], player["gender"],
+                                player["ranking"])
             self.players.append(new_player)
         self.players.sort(key=attrgetter("surname"))
 
     def save_tournaments(self):
-        """Save the tournament in the 'tournaments' table of the the database"""
+        """Save the tournament in the tournaments' table of the the database"""
         self.tournaments.sort(key=attrgetter("name"))
         serialized_tournaments = [tournament.serialized()
                                   for tournament in self.tournaments]
@@ -52,28 +53,37 @@ class Controller:
         player_list = []
         for player in players:
             player = Player(player["surname"], player["name"],
-                            player["birthdate"], player["gender"], player["ranking"])
+                            player["birthdate"], player["gender"],
+                            player["ranking"])
             player_list.append(player)
         return player_list
 
     def recover_rounds(self, rounds):
-        """Return the list of rounds objects based on the list of rounds dictionaries"""
+        """Return the list of rounds objects based on
+        the list of rounds dictionaries"""
         rounds_list = []
         for round in rounds:
             matches = []
             serialized_matches = round["matches"]
             for match in serialized_matches:
                 player_1_serialized = match["player_1"]
-                player_1 = Player(player_1_serialized["surname"], player_1_serialized["name"],
-                                  player_1_serialized["birthdate"], player_1_serialized["gender"], player_1_serialized["ranking"])
+                player_1 = Player(player_1_serialized["surname"],
+                                  player_1_serialized["name"],
+                                  player_1_serialized["birthdate"],
+                                  player_1_serialized["gender"],
+                                  player_1_serialized["ranking"])
                 player_2_serialized = match["player_2"]
-                player_2 = Player(player_2_serialized["surname"], player_2_serialized["name"],
-                                  player_2_serialized["birthdate"], player_2_serialized["gender"], player_2_serialized["ranking"])
+                player_2 = Player(player_2_serialized["surname"],
+                                  player_2_serialized["name"],
+                                  player_2_serialized["birthdate"],
+                                  player_2_serialized["gender"],
+                                  player_2_serialized["ranking"])
                 new_match = ([player_1, match["result_player_1"]], [
                              player_2, match["result_player_2"]])
                 matches.append(new_match)
             new_round = Round(
-                round["round_number"], round["start_time"], round["end_time"], matches)
+                round["round_number"], round["start_time"],
+                round["end_time"], matches)
             rounds_list.append(new_round)
         return rounds_list
 
@@ -85,8 +95,12 @@ class Controller:
         for tournament in tournaments:
             tournament_players = self.recover_players(tournament["players"])
             tournament_rounds = self.recover_rounds(tournament["round_list"])
-            new_tournament = Tournament(tournament["name"], tournament["place"], tournament["date"], tournament["time_management"],
-                                        tournament["description"], tournament["round_number"])
+            new_tournament = Tournament(tournament["name"],
+                                        tournament["place"],
+                                        tournament["date"],
+                                        tournament["time_management"],
+                                        tournament["description"],
+                                        tournament["round_number"])
             new_tournament.set_players(tournament_players)
             new_tournament.set_rounds(tournament_rounds)
             self.tournaments.append(new_tournament)
@@ -97,8 +111,11 @@ class Controller:
         players = []
         while len(players) < player_number:
             player_info = self.view.get_player()
-            player = Player(player_info["surname"], player_info["name"],
-                            player_info["birthdate"], player_info["gender"], player_info['ranking'])
+            player = Player(player_info["surname"],
+                            player_info["name"],
+                            player_info["birthdate"],
+                            player_info["gender"],
+                            player_info['ranking'])
             self.players.append(player)
             players.append(player)
 
@@ -112,7 +129,8 @@ class Controller:
             player_surname = player.get_surname()
             player_ranking = player.get_ranking()
             print(
-                f"{count} -- Rank {player_ranking} : {player_name} {player_surname}")
+                f"{count} -- Rank{player_ranking} :"
+                f"{player_name} {player_surname}")
             count += 1
 
     def get_players(self):
@@ -134,13 +152,19 @@ class Controller:
             count += 1
 
     def create_tournament(self):
-        """Ask user the info required then create and return an object tournament"""
+        """Ask user the info required then create
+        and return an object tournament
+        """
         tournament_info = self.view.get_tournament()
         tournament_info['time'] = self.view.get_tournament_time_management()
         tournament_info['rounds'] = self.view.get_number_of_rounds()
         tournament = Tournament(
-            tournament_info["name"], tournament_info["place"], tournament_info['date'],
-            tournament_info["time"], tournament_info["description"], tournament_info['rounds'])
+            tournament_info["name"],
+            tournament_info["place"],
+            tournament_info['date'],
+            tournament_info["time"],
+            tournament_info["description"],
+            tournament_info['rounds'])
         return tournament
 
     def run(self):
@@ -154,7 +178,8 @@ class Controller:
             elif option == 2:
                 print("Vous avez choisi de créer un tournois")
                 if len(self.players) < 8:
-                    print("Pas assez de joueur pour créer un tournois. Retour au menu")
+                    print("Pas assez de joueur pour créer un tournois."
+                          "Retour au menu")
                 else:
                     tournament = self.create_tournament()
                     self.tournaments.append(tournament)
@@ -172,21 +197,26 @@ class Controller:
                 print("Vous avez choisi d'afficher le classement des joueurs")
                 self.get_players_ranking()
             elif option == 5:
-                print("Vous avez choisi d'afficher la list des joueurs par ordre alphabétique.")
+                print(
+                    "Vous avez choisi d'afficher la liste des joueurs"
+                    " par ordre alphabétique.")
                 self.get_players()
             elif option == 6:
                 print("vous avez choisi d'afficher la liste des tournois.")
                 self.get_tournaments()
             elif option == 7:
-                print("Vous avez choisi de modifier le classement d'un joueur.")
+                print("Vous avez choisi de modifier"
+                      " le classement d'un joueur.")
                 self.get_players_ranking()
                 self.view.set_player_ranking(self.players)
             elif option == 8:
-                print("vous avez choisi de sauvegarder les joueurs dans la database")
+                print("vous avez choisi de sauvegarder"
+                      " les joueurs dans la database")
                 self.save_players()
             elif option == 9:
                 print(
-                    "vous avez choisi de charger les joueurs présents dans la base de données")
+                    "vous avez choisi de charger les joueurs"
+                    " présents dans la base de données")
                 self.load_players()
             elif option == 10:
                 print("Vous avez choisi de sauvegarder les tournois")
@@ -195,12 +225,14 @@ class Controller:
                 print("Vous avez choisi de charger les tournois")
                 self.load_tournaments()
             elif option == 12:
-                print("Vous avez choisi d'afficher la liste des joueurs d'un tournois'")
+                print("Vous avez choisi d'afficher"
+                      " la liste des joueurs d'un tournois'")
                 tournament = self.view.choose_tournament(self.tournaments)
                 tournament.get_player_list()
             elif option == 13:
                 print(
-                    "Vous avez choisi d'afficher le classement des joueurs d'un tournois")
+                    "Vous avez choisi d'afficher"
+                    " le classement des joueurs d'un tournois")
                 tournament = self.view.choose_tournament(self.tournaments)
                 tournament.get_playersrank()
             elif option == 14:
@@ -216,4 +248,5 @@ class Controller:
                 print("Vous avez choisi de quitter l'application. Bye bye !")
                 quit()
             else:
-                print("Choix invalide. Merci de saisir un nombre entre 1 et 16.")
+                print("Choix invalide. Merci de saisir un nombre"
+                      " entre 1 et 16.")
