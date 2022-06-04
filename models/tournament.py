@@ -85,9 +85,7 @@ class Tournament:
             player_name = player.get_name()
             player_surname = player.get_surname()
             player_score = player.get_player_score()
-            print(
-                f"{count} -- Rank {player_score} {player_name} {player_surname}"
-            )
+            print(f"{count} -- Rank {player_score} {player_name} {player_surname}")
             count += 1
 
     def get_playersrank(self):
